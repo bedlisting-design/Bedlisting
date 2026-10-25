@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
@@ -12,6 +13,8 @@ function AdminBar({ signedIn }: { signedIn: boolean }) {
         <Link href="/admin/dashboard" className="text-lg font-semibold">
           bedlisting <span className="font-normal text-neutral-400">admin</span>
         </Link>
+
+        <ThemeToggle />
 
         {signedIn && (
           <nav className="flex flex-wrap items-center gap-5 text-sm">
@@ -105,6 +108,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2.5">
+          <ThemeToggle />
           {!session && (
             <>
               <Link href="/login" className="hidden md:inline text-sm font-medium text-neutral-600 hover:text-neutral-900">Log in</Link>

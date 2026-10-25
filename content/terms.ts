@@ -3,7 +3,6 @@ import {
   EARNING_HOLD_DAYS,
   MIN_PAYOUT_NAIRA,
   UNLOCK_COST,
-  ESCORT_COST,
   SIGNUP_BONUS_CREDITS,
   BOOST_OPTIONS,
   ROOMMATE_CONNECT_COST,
@@ -24,13 +23,13 @@ const boosts = BOOST_OPTIONS.map((b) => `${b.days} days for ${b.cost} bedcoins`)
 export const TERMS_TEXT = `
 ## About bedlisting
 
-bedlisting is a digital property and housing platform that helps people looking for a home connect with landlords, property owners and agents.
+bedlisting is a digital property and housing platform that helps people looking for a home connect with landlords and property owners.
 
 The Platform may enable users to:
 
 - Search for available properties and accommodation;
 - List properties for rent or for sale;
-- Connect people looking for a property with landlords, owners or authorized property agents;
+- Connect people looking for a property with landlords, owners or authorized representatives;
 - Communicate about property opportunities;
 - Create and manage property-related profiles; and
 - Use additional property services introduced by bedlisting from time to time.
@@ -65,11 +64,11 @@ Some features require an account. You agree to:
 
 You must not create an account with false information, impersonate another person or organization, allow others to use your account, create multiple accounts for deceptive or abusive purposes, or try to access another user’s account. bedlisting may suspend or end accounts it reasonably believes have been used fraudulently, unlawfully, abusively or in breach of these Terms.
 
-There are three kinds of user account: people looking for a property, landlords, and agents. Landlords and agents list properties. People looking for a property browse, unlock and contact listers.
+There are two kinds of user account: people looking for a property, and landlords. Landlords list properties. People looking for a property browse, unlock and contact listers.
 
 ## Profiles of people looking for a property
 
-Depending on the features available, a landlord or agent may see:
+Depending on the features available, a landlord may see:
 
 - The user’s first name and the initial of their surname;
 - Verification status;
@@ -105,9 +104,9 @@ Users who list a property are responsible for making sure the listing is accurat
 
 Amenities and similar details are statements made by the lister. bedlisting does not check them. bedlisting may remove, reject, edit, suspend or investigate any listing that appears fraudulent, misleading, unlawful, duplicated, expired or against Platform standards. Some changes to a live listing, such as the title, photos, videos, price, location or ownership document, may send it back for review.
 
-## Landlords, owners, agents and representatives
+## Landlords, owners and representatives
 
-A person who advertises a property as a landlord, owner, agent, property manager or authorized representative must state their relationship to the property accurately. You must not falsely claim to own or represent a property. Agents must be properly authorized to act as agents and must give accurate licence or registration information when asked.
+A person who advertises a property as a landlord, owner, property manager or authorized representative must state their relationship to the property accurately. You must not falsely claim to own or represent a property.
 
 Listings marked "Official bedlisting" are posted by bedlisting itself. The same accuracy standards apply, and bedlisting is the lister for those listings. bedlisting may request documents to verify identity, ownership, authority or relationship to a property. Verification does not guarantee that a property, person, document or transaction is free from risk. Users should carry out their own checks.
 
@@ -129,10 +128,10 @@ bedlisting may review, restrict or remove communications where reasonably necess
 
 bedlisting may offer different kinds of verification. At the time of these Terms:
 
-- A verified landlord or agent badge means bedlisting has reviewed an identity document submitted by that person.
+- A verified landlord badge means bedlisting has reviewed an identity document submitted by that person.
 - A "Verified property" badge means a bedlisting administrator reviewed an ownership document submitted for that listing.
 
-Verification does not guarantee a user’s future conduct, the condition of a property, the truth of every statement made by a user (including amenities), that a property will remain available, that a transaction will be completed, or that a user or property is free from risk. A licence number shown on an agent’s profile is shown as provided by the agent. Use your own judgment and caution.
+Verification does not guarantee a user’s future conduct, the condition of a property, the truth of every statement made by a user (including amenities), that a property will remain available, that a transaction will be completed, or that a user or property is free from risk. Use your own judgment and caution.
 
 ## Property inspections and due diligence
 
@@ -155,13 +154,13 @@ Rent, deposits, purchase prices and similar amounts are paid between users, outs
 
 ## Property sales
 
-Landlords, owners and agents may list properties for sale. For sales listings, bedlisting only helps a buyer connect with the seller or their agent. bedlisting is not a party to the sale and does not provide legal advice, escrow, valuation, title checks or transfer of ownership. Buyers and sellers should use their own lawyers and surveyors. bedlisting may publish additional terms for services connected with property sales in the future.
+Landlords and owners may list properties for sale. For sales listings, bedlisting only helps a buyer connect with the seller. bedlisting is not a party to the sale and does not provide legal advice, escrow, valuation, title checks or transfer of ownership. Buyers and sellers should use their own lawyers and surveyors. bedlisting may publish additional terms for services connected with property sales in the future.
 
 ## Fees and paid services
 
 Browsing is free. Some features need bedcoins or payment, including:
 
-- Unlocking a listing, and requesting an agent escort (see the sections below); and
+- Unlocking a listing (see the sections below); and
 - Featuring a listing for greater visibility (currently ${boosts}).
 
 The price or number of bedcoins is shown before you confirm. Unless these Terms or the law say otherwise, fees for completed services are not refundable.
@@ -182,11 +181,10 @@ You can browse, search and see one photo of the inside of a property, together w
 
 Unlocking gives you access to information and the ability to message the lister. It does not promise that the property is available, that its details are accurate, or that you will be able to rent or buy it.
 
-For listings by agents, you may also request that the agent take you to the property for a fee (currently ${ESCORT_COST} bedcoins). The bedcoins are held when you make the request. They are returned if the agent declines or you cancel before the agent accepts. They are paid to the agent when you confirm the visit is complete.
 
-## Earnings and withdrawals for landlords and agents
+## Earnings and withdrawals for landlords
 
-When a user spends purchased bedcoins to unlock your listing, or to complete an escort with you, you earn ${share}% of the money that user actually paid for those bedcoins. bedlisting keeps the remaining ${100 - share}%. Free bedcoins do not generate earnings.
+When a user spends purchased bedcoins to unlock your listing, you earn ${share}% of the money that user actually paid for those bedcoins. bedlisting keeps the remaining ${100 - share}%. Free bedcoins do not generate earnings.
 
 - Earnings are held for ${EARNING_HOLD_DAYS} days and then become available to withdraw.
 - To withdraw you must have a verified identity, at least ₦${MIN_PAYOUT_NAIRA.toLocaleString()} available, and a bank account in your verified name.
@@ -200,8 +198,7 @@ When a user spends purchased bedcoins to unlock your listing, or to complete an 
 
 bedcoins that have been spent are generally not refundable, except that:
 
-- If bedlisting removes a listing as fraudulent or misleading, the bedcoins spent to unlock it, and any open escort request for it, are returned to your bedcoin balance.
-- If an agent declines an escort request, or you cancel it before it is accepted, the bedcoins are returned.
+- If bedlisting removes a listing as fraudulent or misleading, the bedcoins spent to unlock it are returned to your bedcoin balance.
 - If a roommate request is declined, cancelled by you or not answered in time, the bedcoins are returned.
 - If you are charged but your bedcoins are not added, or another technical error occurs, contact support and we will correct it.
 
@@ -283,11 +280,11 @@ These Terms are governed by the laws of the Federal Republic of Nigeria, unless 
 
 ## Disputes between users
 
-bedlisting may, but is not generally obliged to, help resolve disputes between users. Users are encouraged to resolve disputes directly and lawfully. bedlisting is not automatically responsible for contractual disputes between landlords, agents, tenants, buyers, sellers or other users. Where needed for safety, fraud prevention or legal compliance, bedlisting may investigate reports and act against accounts or content.
+bedlisting may, but is not generally obliged to, help resolve disputes between users. Users are encouraged to resolve disputes directly and lawfully. bedlisting is not automatically responsible for contractual disputes between landlords, tenants, buyers, sellers or other users. Where needed for safety, fraud prevention or legal compliance, bedlisting may investigate reports and act against accounts or content.
 
 ## Reporting fraud, abuse or unsafe activity
 
-Please report suspected fraudulent listings, fake landlords or agents, payment scams, harassment, impersonation, misleading property information (including wrong amenities) and other unsafe or unlawful conduct, using the Report button on a listing or by contacting us. bedlisting may investigate and take appropriate action. If there is an immediate threat to life, safety or property, contact the emergency services or law enforcement.
+Please report suspected fraudulent listings, fake landlords, payment scams, harassment, impersonation, misleading property information (including wrong amenities) and other unsafe or unlawful conduct, using the Report button on a listing or by contacting us. bedlisting may investigate and take appropriate action. If there is an immediate threat to life, safety or property, contact the emergency services or law enforcement.
 
 ## Contact us
 

@@ -63,7 +63,7 @@ export default function BuyCredits({ packages }: { packages: CreditPackage[] }) 
             className="rounded-lg border border-neutral-200 bg-white p-4 text-left hover:border-brand-600 disabled:opacity-50"
           >
             <p className="text-sm text-neutral-500">{p.label}</p>
-            <p className="text-xl font-semibold">{p.credits} bedcoins</p>
+            <p className="text-xl font-semibold">{p.credits.toLocaleString()} bedcoins</p>
             <p className="text-sm text-neutral-700">₦{p.priceNaira.toLocaleString()}</p>
             {busy === p.id && <p className="mt-1 text-xs text-neutral-500">Redirecting to Paystack...</p>}
           </button>

@@ -9,7 +9,7 @@ import { isListerRole } from "@/lib/format";
 export async function POST() {
   const session = await getServerSession(authOptions);
   if (!session || (!isListerRole(session.user.role) && session.user.role !== "ADMIN")) {
-    return NextResponse.json({ error: "Only landlords and agents can upload videos." }, { status: 403 });
+    return NextResponse.json({ error: "Only landlords can upload videos." }, { status: 403 });
   }
   if (!process.env.CLOUDINARY_API_SECRET || !process.env.CLOUDINARY_CLOUD_NAME) {
     return NextResponse.json({ error: "Video upload is not configured yet." }, { status: 503 });

@@ -54,11 +54,11 @@ All the numbers live in `lib/pricing.ts`. Change them there.
 | Action | Cost |
 |---|---|
 | Browse, search, see the cover photo | Free |
-| Unlock a property (all photos, exact address, map pin, directions, message the lister) | 5 bedcoins (rent or sale) |
-| Ask an agent to take you to the property | 20 bedcoins (placeholder, set the real fee) |
-| Lister features a listing | 3 days 10, 7 days 20, 14 days 40 bedcoins |
+| Unlock a property (all photos, exact address, map pin, directions, message the lister) | 500 bedcoins (rent or sale) |
+| Ask an agent to take you to the property | 2,000 bedcoins (placeholder; escorts are off while there are no agents) |
+| Lister features a listing | 3 days 1,000, 7 days 2,000, 14 days 4,000 bedcoins |
 
-New seekers get 5 free bedcoins (one free unlock). Free bedcoins never earn a lister money,
+New seekers get 500 free bedcoins (one free unlock). Free bedcoins never earn a lister money,
 so fake sign-ups cannot be used to farm payouts.
 
 **Who gets what.** When someone spends *paid* bedcoins to unlock a listing, the landlord or agent
@@ -179,7 +179,7 @@ Users switch the optional ones off on their profile page. The wording is in `lib
 
 ## Roommate matching
 
-- **Free:** create a profile and see matches. **Paid:** sending a request costs `ROOMMATE_CONNECT_COST` bedcoins (placeholder: 3, in `lib/pricing.ts`). It is returned if declined, cancelled, or unanswered for 72 hours (handled by the daily job). Chat opens only after the other person accepts. bedlisting keeps 100% of accepted requests.
+- **Free:** create a profile and see matches. **Paid:** sending a request costs `ROOMMATE_CONNECT_COST` bedcoins (placeholder: 300, in `lib/pricing.ts`). It is returned if declined, cancelled, or unanswered for 72 hours (handled by the daily job). Chat opens only after the other person accepts. bedlisting keeps 100% of accepted requests.
 - **Matching** (`lib/roommates.ts`, scores 0 to 100): area 30, budget overlap 25, move-in date 15, sleep 10, tidiness 10, visitors 10. Two hard rules: a "same gender only" preference is respected in both directions, and a smoker is only matched with someone who is fine with smoking. The same rules are enforced again on the server when a request is sent.
 - **Privacy:** profiles show first name plus last initial, gender, area, budget, move-in date and lifestyle. No photos and no contact details. People must confirm they are 18 or over.
 - **Safety:** safety tips on every roommate page, a "Report this person" button on cards and chats, and a limit of 10 requests a day.

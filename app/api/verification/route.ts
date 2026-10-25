@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session || (session.user.role !== "LANDLORD" && session.user.role !== "AGENT")) {
     return NextResponse.json(
-      { error: "Only landlords and agents can submit verification." },
+      { error: "Only landlords can submit verification." },
       { status: 403 }
     );
   }

@@ -61,7 +61,7 @@ export default function UnlockBox({
         <li>• The lister’s name and details</li>
         {videoCount > 0 && <li>• {videoCount} video tour{videoCount === 1 ? "" : "s"}</li>}
         <li>• Exact address, map pin and directions</li>
-        <li>• Message the {isSale ? "seller" : "owner or agent"} directly</li>
+        <li>• Message the {isSale ? "seller" : "owner"} directly</li>
       </ul>
 
       <button

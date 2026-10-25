@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UNLOCK_COST } from "@/lib/pricing";
 
 export default function HomePage() {
   return (
@@ -25,7 +26,7 @@ export default function HomePage() {
                 <span className="block text-emerald-300">near UNN Nsukka</span>
               </h1>
               <p className="mt-4 max-w-xl text-base leading-relaxed text-white/85 md:mt-5 md:text-lg">
-                Direct from ID-checked landlords and agents. Fake listings get removed and refunded, so no last-minute wahala. Hilltop, Odenigwe, Odim and more.
+                Direct from ID-checked landlords. Fake listings get removed and refunded, so no last-minute wahala. Hilltop, Odenigwe, Odim and more.
               </p>
 
               <form className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-stretch" action="/properties" method="get">
@@ -54,7 +55,7 @@ export default function HomePage() {
                 <p className="mt-0.5 text-[11px] text-white/70 md:text-xs">To browse</p>
               </div>
               <div className="text-center">
-                <p className="text-xl font-bold text-white md:text-2xl">5</p>
+                <p className="text-xl font-bold text-white md:text-2xl">{UNLOCK_COST.RENT}</p>
                 <p className="mt-0.5 text-[11px] text-white/70 md:text-xs">Bedcoins to unlock</p>
               </div>
               <div className="text-center">
@@ -75,7 +76,7 @@ export default function HomePage() {
             <div className="rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 text-xl">🛡️</div>
               <h3 className="mt-4 text-base font-semibold">Only ID-checked listers</h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">Every landlord and agent submits government ID. Our team reviews it before they can post a single lodge. No more fake listings.</p>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-600">Every landlord submits government ID. Our team reviews it before they can post a single lodge. No more fake listings.</p>
             </div>
             <div className="rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 text-xl">💬</div>
@@ -85,7 +86,7 @@ export default function HomePage() {
             <div className="rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 text-xl">🪙</div>
               <h3 className="mt-4 text-base font-semibold">Pay only when you’re serious</h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">Browse free. Unlock all photos, the exact location and direct messaging with 5 bedcoins, once per property.</p>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-600">Browse free. Unlock all photos, the exact location and direct messaging with {UNLOCK_COST.RENT} bedcoins, once per property.</p>
             </div>
             <div className="rounded-2xl border border-neutral-200/80 bg-white p-6 shadow-sm">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600 text-xl">📍</div>
@@ -156,7 +157,7 @@ export default function HomePage() {
             <div>
               <span className="text-5xl font-bold text-brand-100">02</span>
               <h3 className="mt-2 text-lg font-semibold">Unlock when ready</h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">Found something good? Spend 5 bedcoins to unlock all photos, the exact map location and direct messaging. You pay once per property.</p>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-600">Found something good? Spend {UNLOCK_COST.RENT} bedcoins to unlock all photos, the exact map location and direct messaging. You pay once per property.</p>
             </div>
             <div>
               <span className="text-5xl font-bold text-brand-100">03</span>

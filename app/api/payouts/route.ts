@@ -13,7 +13,7 @@ import { requireVerifiedEmail } from "@/lib/emailGate";
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session || !isListerRole(session.user.role)) {
-    return NextResponse.json({ error: "Only landlords and agents can withdraw." }, { status: 403 });
+    return NextResponse.json({ error: "Only landlords can withdraw." }, { status: 403 });
   }
   const gate = await requireVerifiedEmail(session);
   if (gate) return gate;

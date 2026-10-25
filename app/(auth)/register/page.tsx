@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [role, setRole] = useState<"TENANT" | "LANDLORD" | "AGENT">("TENANT");
+  const [role, setRole] = useState<"TENANT" | "LANDLORD">("TENANT");
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function RegisterPage() {
       <h1 className="mb-6 text-2xl font-semibold">Create your account</h1>
 
       <div className="mb-6 flex rounded-md border border-neutral-300 p-1">
-        {(["TENANT", "LANDLORD", "AGENT"] as const).map((r) => (
+        {(["TENANT", "LANDLORD"] as const).map((r) => (
           <button
             key={r}
             type="button"
@@ -47,7 +47,7 @@ export default function RegisterPage() {
               role === r ? "bg-brand-600 text-white" : "text-neutral-600"
             }`}
           >
-            {r === "TENANT" ? "Looking for a property" : r === "LANDLORD" ? "Landlord" : "Agent"}
+            {r === "TENANT" ? "Looking for a property" : "Landlord"}
           </button>
         ))}
       </div>

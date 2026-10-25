@@ -1,3 +1,4 @@
+import { COIN_VALUE_SCALE } from "@/lib/pricing";
 import { prisma } from "@/lib/prisma";
 import { notifyPurchase } from "@/lib/notify";
 
@@ -49,8 +50,9 @@ export async function fulfilPayment(reference: string) {
       select: { creditBalance: true, paidCoinValueKobo: true },
     });
     const newBalance = buyer.creditBalance + payment.credits;
+    // Stored as kobo-per-bedcoin x COIN_VALUE_SCALE (see lib/pricing.ts) so nothing is lost to rounding.
     const newValue = Math.round(
-      (buyer.creditBalance * buyer.paidCoinValueKobo + payment.amountKobo) / newBalance
+      (buyer.creditBalance * buyer.paidCoinValueKobo + payment.amountKobo * COIN_VALUE_SCALE) / newBalance
     );
     await tx.user.update({
       where: { id: payment.userId },

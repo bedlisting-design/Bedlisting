@@ -44,7 +44,7 @@ export default function Footer() {
           </div>
           <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-neutral-100 pt-6 text-xs text-neutral-400 sm:flex-row">
             <p>© 2026 bedlisting. Built for Nsukka.</p>
-            <p>ID-checked landlords and agents.</p>
+            <p>ID-checked landlords.</p>
           </div>
         </div>
       </footer>

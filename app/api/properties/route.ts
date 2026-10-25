@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   const isAdmin = session?.user.role === "ADMIN";
   if (!session || (!isListerRole(session.user.role) && !isAdmin)) {
     return NextResponse.json(
-      { error: "Only landlords and agents can list properties." },
+      { error: "Only landlords can list properties." },
       { status: 403 }
     );
   }
