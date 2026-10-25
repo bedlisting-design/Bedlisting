@@ -1,0 +1,478 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  TENANT   // "normal user": browses, rents, buys
+  LANDLORD
+  AGENT
+  ADMIN    // only ever signs in on the admin subdomain
+}
+
+enum LodgeType {
+  ONE_ROOM
+  SELF_CON
+  BOYS_QUARTERS
+  HOSTEL
+  FLAT_2_BED
+  FLAT_3_BED
+  FLAT_4_BED
+}
+
+enum Amenity {
+  RUNNING_WATER
+  WATER_HEATER
+  OVERHEAD_TANK
+  CONSTANT_LIGHT
+}
+
+enum RoommateMode {
+  NEED_ROOM   // looking for a place (and a roommate to share it)
+  HAVE_ROOM   // has a place, looking for someone to share it
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum GenderPref {
+  ANY
+  SAME
+}
+
+enum SleepPattern {
+  EARLY
+  NIGHT
+  FLEXIBLE
+}
+
+enum VisitorsPref {
+  RARELY
+  SOMETIMES
+  OFTEN
+}
+
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+enum ListingType {
+  RENT
+  SALE
+}
+
+enum CreditTxType {
+  PURCHASE
+  SIGNUP_BONUS
+  UNLOCK_SPEND
+  ESCORT_SPEND
+  BOOST_SPEND
+  ROOMMATE_SPEND
+  REFUND
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+// HELD: waiting out the hold period (then counts as available)
+// IN_PAYOUT: attached to a payout request
+enum EarningStatus {
+  HELD
+  IN_PAYOUT
+  PAID_OUT
+  REVERSED
+}
+
+enum PayoutStatus {
+  REQUESTED
+  PAID
+  REJECTED
+}
+
+enum EscortStatus {
+  REQUESTED
+  ACCEPTED
+  DECLINED
+  CANCELLED
+  COMPLETED
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ListingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REMOVED
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWING
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            Role      @default(TENANT)
+  budget          Int?
+  preferredCity   String?
+  moveDate        DateTime?
+  status          UserStatus @default(ACTIVE)
+  createdAt       DateTime  @default(now())
+
+  // Profile
+  phone           String?
+  bio             String?
+  agencyName      String?
+  licenseNumber   String?   // agents: LASRERA / ESVARBON / NIESV number
+  emailNotifications Boolean @default(true) // optional emails: messages, escorts, earnings
+  emailVerified   DateTime? // set when they click the link we email; null = not confirmed yet
+  emailTokens     EmailVerificationToken[]
+  roommateProfile   RoommateProfile?
+  roommateSent      RoommateConnection[] @relation("rmRequester")
+  roommateReceived  RoommateConnection[] @relation("rmTarget")
+  roommateMessages  RoommateMessage[]
+
+  // Credits. Bonus credits (free sign-up credits) never earn the lister money.
+  creditBalance   Int       @default(0)   // paid credits
+  bonusBalance    Int       @default(0)   // free credits
+  // Weighted-average kobo this user paid per paid credit. Lets lister earnings be
+  // exactly 40% of the money actually collected, whatever bundle was bought.
+  paidCoinValueKobo Int     @default(0)
+  unlocks             Unlock[]
+  creditTransactions  CreditTransaction[]
+  payments            Payment[]
+  earnings            Earning[]
+  payoutRequests      PayoutRequest[]
+  escortsRequested    EscortRequest[] @relation("escortSeeker")
+  escortsReceived     EscortRequest[] @relation("escortLister")
+
+  properties        Property[]
+  sentMessages       Message[]       @relation("sender")
+  receivedMessages   Message[]       @relation("receiver")
+  verification        Verification?
+  savedProperties     SavedProperty[]
+  reportsFiled         Report[]       @relation("reporter")
+  reportsAgainst        Report[]      @relation("reported")
+}
+
+model Verification {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  idDocumentUrl String
+  idType        String
+  status        VerificationStatus @default(PENDING)
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  submittedAt   DateTime @default(now())
+}
+
+model Property {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  rent        Int
+  state       String
+  city        String
+  bedrooms    Int
+  bathrooms   Int
+  furnished   Boolean  @default(false)
+  photos      String[]   // INSIDE photos. Only the first is free to see; the rest unlock.
+  exteriorPhotos String[] @default([])  // OUTSIDE/building photos, hidden until unlocked
+
+  // "rent" holds the price: annual rent for RENT, asking price for SALE.
+  listingType     ListingType @default(RENT)
+  lodgeType       LodgeType?              // rentals only
+  amenities       Amenity[]   @default([])
+  videos          String[]    @default([])   // private Cloudinary video tours, shown after unlock
+  address         String?     // exact address, hidden until unlocked
+  latitude        Float?      // exact pin, hidden until unlocked
+  longitude       Float?
+  plusCode        String?     // Google Plus Code for places with no street address
+  landmarkDirections String?  // written directions, hidden until unlocked
+  isOfficial      Boolean     @default(false) // listed by bedlisting itself
+  featuredUntil   DateTime?   // paid boost: shown first + "Featured" tag until this time
+
+  landlordId  String
+  landlord    User     @relation(fields: [landlordId], references: [id])
+
+  ownershipDocUrl  String?
+  verifiedProperty Boolean @default(false)
+
+  status    ListingStatus @default(PENDING)
+  createdAt DateTime @default(now())
+
+  messages Message[]
+  savedBy  SavedProperty[]
+  reports  Report[]
+  unlocks  Unlock[]
+  earnings Earning[]
+  escorts  EscortRequest[]
+}
+
+model Message {
+  id            String   @id @default(cuid())
+  propertyId    String
+  property      Property @relation(fields: [propertyId], references: [id])
+  senderId      String
+  sender        User     @relation("sender", fields: [senderId], references: [id])
+  receiverId    String
+  receiver      User     @relation("receiver", fields: [receiverId], references: [id])
+  content       String
+  contactShared Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model SavedProperty {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
+
+model Report {
+  id             String   @id @default(cuid())
+  reporterId     String
+  reporter       User     @relation("reporter", fields: [reporterId], references: [id])
+  reportedUserId String?
+  reportedUser   User?    @relation("reported", fields: [reportedUserId], references: [id])
+  propertyId     String?
+  property       Property? @relation(fields: [propertyId], references: [id])
+  reason         String
+  details        String?
+  status         ReportStatus @default(OPEN)
+  createdAt      DateTime @default(now())
+}
+
+// A user paid credits to see the full listing (interior photos, exact
+// location, directions) and to message the lister.
+model Unlock {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  cost       Int
+  paidSpent  Int      // paid credits used (these generate lister earnings)
+  bonusSpent Int      // free credits used (these do not)
+  refunded   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  earning Earning?
+
+  @@unique([userId, propertyId])
+}
+
+// Every credit movement. Balances can always be rebuilt from this table.
+model CreditTransaction {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id])
+  type       CreditTxType
+  paidDelta  Int          @default(0)
+  bonusDelta Int          @default(0)
+  note       String?
+  propertyId String?
+  createdAt  DateTime     @default(now())
+
+  @@index([userId, createdAt])
+}
+
+// One row per Paystack checkout. The price comes from our server config,
+// never from the browser.
+model Payment {
+  id         String        @id @default(cuid())
+  reference  String        @unique
+  userId     String
+  user       User          @relation(fields: [userId], references: [id])
+  packageId  String
+  credits    Int
+  amountKobo Int
+  status     PaymentStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  paidAt     DateTime?
+}
+
+// The lister's share of credits spent on their listing.
+model Earning {
+  id          String        @id @default(cuid())
+  ownerId     String
+  owner       User          @relation(fields: [ownerId], references: [id])
+  propertyId  String?
+  property    Property?     @relation(fields: [propertyId], references: [id])
+  unlockId    String?       @unique
+  unlock      Unlock?       @relation(fields: [unlockId], references: [id])
+  escortId    String?       @unique
+  escort      EscortRequest? @relation(fields: [escortId], references: [id])
+  amountKobo  Int
+  status      EarningStatus @default(HELD)
+  availableAt DateTime
+  payoutId    String?
+  payout      PayoutRequest? @relation(fields: [payoutId], references: [id])
+  createdAt   DateTime      @default(now())
+
+  @@index([ownerId, status])
+}
+
+model PayoutRequest {
+  id            String       @id @default(cuid())
+  userId        String
+  user          User         @relation(fields: [userId], references: [id])
+  amountKobo    Int
+  status        PayoutStatus @default(REQUESTED)
+  bankName      String
+  accountNumber String
+  accountName   String
+  reference     String?      // transfer reference, filled in by admin when paid
+  adminNote     String?
+  createdAt     DateTime     @default(now())
+  processedAt   DateTime?
+
+  earnings Earning[]
+}
+
+// Seeker pays credits to have an agent take them to the property.
+model EscortRequest {
+  id            String       @id @default(cuid())
+  propertyId    String
+  property      Property     @relation(fields: [propertyId], references: [id])
+  seekerId      String
+  seeker        User         @relation("escortSeeker", fields: [seekerId], references: [id])
+  listerId      String
+  lister        User         @relation("escortLister", fields: [listerId], references: [id])
+  cost          Int
+  paidSpent     Int
+  bonusSpent    Int
+  coinValueKobo Int          @default(0)
+  preferredTime String
+  note          String?
+  status        EscortStatus @default(REQUESTED)
+  createdAt     DateTime     @default(now())
+
+  earning Earning?
+}
+
+// Failed sign-in attempts, used to slow down password guessing.
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  key       String   // "user:email", "admin:email" or "ip:address"
+  createdAt DateTime @default(now())
+
+  @@index([key, createdAt])
+  @@index([createdAt])
+}
+
+// Remembers optional emails already sent, so a busy conversation does not flood an inbox.
+model NotificationLog {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String
+  createdAt DateTime @default(now())
+
+  @@index([userId, key, createdAt])
+}
+
+// One-time link sent to confirm an email address. Only a hash is stored,
+// so a database leak cannot be used to confirm someone else's address.
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// A person's roommate profile. No photo and no contact details: only what
+// is needed to match. Their name is shown as first name + last initial.
+model RoommateProfile {
+  id           String       @id @default(cuid())
+  userId       String       @unique
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  active       Boolean      @default(true)
+  mode         RoommateMode
+  gender       Gender
+  genderPref   GenderPref   @default(SAME)
+  area         String       // e.g. "Hilltop, Nsukka"
+  budgetMin    Int          // per person, per year (naira)
+  budgetMax    Int
+  moveDate     DateTime?
+  sleep        SleepPattern @default(FLEXIBLE)
+  cleanliness  Int          @default(3) // 1 relaxed .. 5 very tidy
+  smokes       Boolean      @default(false)
+  smokingOk    Boolean      @default(false) // fine sharing with a smoker
+  visitors     VisitorsPref @default(SOMETIMES)
+  bio          String?
+  roomDetails  String?      // for HAVE_ROOM: what the room is like (no exact address)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([active, mode])
+}
+
+// A request to connect. The sender pays bedcoins up front; they come back if it is declined,
+// cancelled or goes unanswered. Chat opens only once the other person accepts.
+model RoommateConnection {
+  id          String           @id @default(cuid())
+  requesterId String
+  requester   User             @relation("rmRequester", fields: [requesterId], references: [id])
+  targetId    String
+  target      User             @relation("rmTarget", fields: [targetId], references: [id])
+  status      ConnectionStatus @default(PENDING)
+  cost        Int
+  paidSpent   Int
+  bonusSpent  Int
+  createdAt   DateTime         @default(now())
+  respondedAt DateTime?
+
+  messages RoommateMessage[]
+
+  @@index([requesterId, status])
+  @@index([targetId, status])
+}
+
+model RoommateMessage {
+  id           String             @id @default(cuid())
+  connectionId String
+  connection   RoommateConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  senderId     String
+  sender       User               @relation(fields: [senderId], references: [id])
+  content      String
+  createdAt    DateTime           @default(now())
+
+  @@index([connectionId, createdAt])
+}
