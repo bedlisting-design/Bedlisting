@@ -4,6 +4,8 @@ import { formatPrice, hasMapLocation } from "@/lib/format";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import { LODGE_TYPES, AMENITIES, isLodgeType, isAmenity, lodgeLabel, amenityLabel } from "@/lib/lodge";
 
+export const dynamic = "force-dynamic";
+
 export default async function PropertiesPage({
   searchParams,
 }: {

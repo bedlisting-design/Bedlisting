@@ -5,6 +5,8 @@ import Link from "next/link";
 import { formatPrice } from "@/lib/format";
 import { lodgeLabel, amenityLabel } from "@/lib/lodge";
 
+export const dynamic = "force-dynamic";
+
 type AdminProperty = {
   id: string;
   title: string;

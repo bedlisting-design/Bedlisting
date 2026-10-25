@@ -13,6 +13,8 @@ import VerifiedBadge from "@/components/VerifiedBadge";
 import UnlockBox from "@/components/UnlockBox";
 import EscortBox from "@/components/EscortBox";
 
+export const dynamic = "force-dynamic";
+
 export default async function PropertyDetailPage({
   params,
 }: {

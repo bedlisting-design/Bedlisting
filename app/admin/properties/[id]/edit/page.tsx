@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import PropertyForm from "@/components/PropertyForm";
 
+export const dynamic = "force-dynamic";
+
 // Admins can edit any listing (their own official ones or a landlord's).
 export default async function AdminEditPropertyPage({ params }: { params: { id: string } }) {
   const session = await requireAdmin();
