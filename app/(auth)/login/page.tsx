@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { safeNext } from "@/lib/safeRedirect";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +11,15 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [next, setNext] = useState("/");
+  const [justRegistered, setJustRegistered] = useState(false);
+
+  // Read the address bar after load (no useSearchParams, so the page can stay static).
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    setNext(safeNext(q.get("callbackUrl")));
+    setJustRegistered(q.get("registered") === "true");
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,13 +39,18 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/");
+    router.push(next);
     router.refresh();
   }
 
   return (
     <div className="mx-auto max-w-md">
       <h1 className="mb-6 text-2xl font-semibold">Log in</h1>
+      {justRegistered && (
+        <p className="mb-4 rounded-md bg-brand-50 px-3 py-2 text-sm text-brand-700">
+          Account created. Log in to continue.
+        </p>
+      )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           required
@@ -62,6 +78,16 @@ export default function LoginPage() {
           {loading ? "Logging in..." : "Log in"}
         </button>
       </form>
+
+      <p className="mt-4 text-sm text-neutral-500">
+        New to bedlisting?{" "}
+        <Link
+          href={next === "/" ? "/register" : `/register?callbackUrl=${encodeURIComponent(next)}`}
+          className="text-brand-700 underline"
+        >
+          Create a free account
+        </Link>
+      </p>
     </div>
   );
 }

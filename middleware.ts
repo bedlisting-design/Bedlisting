@@ -55,6 +55,19 @@ export async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL("/not-found-admin", req.url));
   }
 
+  // Browsing lodges needs a free account. Visitors are sent to sign up and then
+  // brought back to exactly the page (and search) they asked for.
+  const isBrowsePath = pathname === "/properties" || pathname.startsWith("/properties/");
+  if (isBrowsePath && !token) {
+    const registerUrl = new URL("/register", req.url);
+    registerUrl.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
+    return NextResponse.redirect(registerUrl);
+  }
+  // The listings data behind those pages is closed to visitors too.
+  if (pathname.startsWith("/api/properties") && req.method === "GET" && !token) {
+    return NextResponse.json({ error: "Create a free account to browse listings." }, { status: 401 });
+  }
+
   const needsLogin =
     pathname.startsWith("/landlord") ||
     pathname.startsWith("/dashboard") ||
@@ -66,7 +79,7 @@ export async function middleware(req: NextRequest) {
 
   if (needsLogin && !token) {
     const loginUrl = new URL("/login", req.url);
-    loginUrl.searchParams.set("callbackUrl", pathname);
+    loginUrl.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
     return NextResponse.redirect(loginUrl);
   }
 

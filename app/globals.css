@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[#faf9f7] text-neutral-900;
+  @apply bg-white text-neutral-900;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -11,8 +11,9 @@ body {
    The site is designed light. Adding class "dark" to <html> (see ThemeToggle and the
    script in app/layout.tsx) remaps the colours below. White text and translucent-white
    overlays (used on the green buttons and the hero photo) are left alone on purpose. */
-html { color-scheme: light; }
-html.dark { color-scheme: dark; }
+/* "only light" also stops phone browsers (Samsung Internet, Chrome) from darkening the page on their own. */
+html { color-scheme: only light; background-color: #ffffff; }
+html.dark { color-scheme: dark; background-color: #0f1110; }
 
 html.dark body { background-color: #0f1110; color: #f1f1f1; }
 
@@ -82,3 +83,7 @@ html.dark body { background-color: #0f1110; color: #f1f1f1; }
 }
 .dark input::placeholder,
 .dark textarea::placeholder { color: #7d827f; }
+
+/* tiles / tags used on the home page */
+.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.16); }
+.dark .bg-neutral-900\/80 { background-color: rgba(0, 0, 0, 0.7); }

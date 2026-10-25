@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { safeNext } from "@/lib/safeRedirect";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -10,6 +11,12 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [next, setNext] = useState("/");
+
+  useEffect(() => {
+    setNext(safeNext(new URLSearchParams(window.location.search).get("callbackUrl")));
+  }, []);
+  const fromBrowse = next.startsWith("/properties");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -30,12 +37,20 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/login?registered=true");
+    router.push(
+      next === "/" ? "/login?registered=true" : `/login?registered=true&callbackUrl=${encodeURIComponent(next)}`
+    );
   }
 
   return (
     <div className="mx-auto max-w-md">
       <h1 className="mb-6 text-2xl font-semibold">Create your account</h1>
+      {fromBrowse && (
+        <p className="mb-6 rounded-md bg-brand-50 px-3 py-2 text-sm text-brand-700">
+          Create a free account to browse lodges. It takes a minute, and new accounts get free bedcoins to unlock
+          their first property.
+        </p>
+      )}
 
       <div className="mb-6 flex rounded-md border border-neutral-300 p-1">
         {(["TENANT", "LANDLORD"] as const).map((r) => (
@@ -94,9 +109,19 @@ export default function RegisterPage() {
         <Link href="/faq" className="underline">FAQ</Link> for how bedcoins work.
       </p>
 
+      <p className="mt-4 text-sm text-neutral-500">
+        Already have an account?{" "}
+        <Link
+          href={next === "/" ? "/login" : `/login?callbackUrl=${encodeURIComponent(next)}`}
+          className="text-brand-700 underline"
+        >
+          Log in
+        </Link>
+      </p>
+
       {role === "TENANT" && (
         <p className="mt-4 text-sm text-neutral-500">
-          Browsing is free. New accounts get free bedcoins to unlock your first property.
+          Joining is free. New accounts get free bedcoins to unlock your first property.
         </p>
       )}
       {role !== "TENANT" && (

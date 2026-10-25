@@ -53,7 +53,7 @@ All the numbers live in `lib/pricing.ts`. Change them there.
 
 | Action | Cost |
 |---|---|
-| Browse, search, see the cover photo | Free |
+| Browse, search, see the cover photo | Free, but needs a free account (visitors are sent to sign up) |
 | Unlock a property (all photos, exact address, map pin, directions, message the lister) | 500 bedcoins (rent or sale) |
 | Ask an agent to take you to the property | 2,000 bedcoins (placeholder; escorts are off while there are no agents) |
 | Lister features a listing | 3 days 1,000, 7 days 2,000, 14 days 4,000 bedcoins |

@@ -17,7 +17,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="color-scheme" content="light dark" />
         <script
           dangerouslySetInnerHTML={{
             __html:
@@ -25,7 +24,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-[#faf9f7] text-neutral-900 antialiased">
+      <body className="text-neutral-900 antialiased">
         <SessionProvider>
           <SiteShell>{children}</SiteShell>
         </SessionProvider>
